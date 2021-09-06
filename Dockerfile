@@ -12,10 +12,12 @@ RUN apt-get update
 RUN apt-get install -y openjdk-8-jdk
 RUN apt-get install -y sbt
 RUN git clone https://github.com/enoriega/ScienceParseReader.git && cd ScienceParseReader && sbt assembly && echo $PWD && cp target/scala-2.12/ScienceParseReader-assembly-0.1.jar ..
-RUN git clone https://github.com/clulab/reach.git && cd reach && git checkout frailty && sbt assembly && cp target/scala-2.12/reach-1.6.3-SNAPSHOT-FAT.jar ..
+RUN git clone https://github.com/clulab/reach.git &&  cd reach && git checkout frailty && sbt assembly && cp target/scala-2.12/reach-1.6.3-SNAPSHOT-FAT.jar .. 
 RUN mkdir txt_files
 RUN echo "/usr/bin/java -jar ScienceParseReader-assembly-0.1.jar input txt_files" > run.sh
-RUN echo "cd reach && sbt -J-Xmx16g -DpapersDir=/txt_files -DoutDir=/output -DthreadLimit=16  \"runMain org.clulab.reach.RunReachCLI\"" >> run.sh
+# RUN echo "cd reach && sbt -J-Xmx16g -DpapersDir=/txt_files -DoutDir=/output -DthreadLimit=16  \"runMain org.clulab.reach.RunReachCLI\"" >> run.sh
+RUN echo "/usr/bin/java -DpapersDir=/txt_files -DoutDir=/output -DrootDir=/output -jar reach-1.6.3-SNAPSHOT-FAT.jar org.clulab.reach.RunReachCLI" >>  run.sh
+RUN chmod 777 txt_files
 CMD ["/bin/bash", "run.sh"]
 # CMD ["/usr/bin/java", "-cp", "reach-1.6.3-SNAPSHOT-FAT.jar", "-DpapersDir=/txt_files", "-DoutDir=/output", "-DoutputTypes=\[\"arizona\'\]" "-DthreadLimit=16", "org.clulab.reach.RunReachCLI"]
 
